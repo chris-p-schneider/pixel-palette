@@ -1,0 +1,24 @@
+{# IN: title #}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+{% include 'head.html' %}
+<body>
+
+<!-- LOGO -->
+<div class="container d-flex justify-content-center pt-3 px-3">
+	<h1 id="logo" class="pixel no-select">
+		{{ title }}
+	</h1>	
+</div>
+
+{% include 'header.html' %}
+
+<!-- MAIN -->
+<main>
+	{% block main %}
+	{% endblock %}
+</main>
+
+<span id="to-top" class="no-select"><a href="#logo">▲</a></span>
+</body>
+</html>

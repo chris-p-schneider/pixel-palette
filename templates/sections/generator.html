@@ -1,0 +1,29 @@
+<div class="row p-2 m-5 mt-0 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg">
+	<div id="palette-generator" class="p-3 p-lg-5 pt-lg-3">
+        <h1 class="display-4 fw-bold lh-1 text-body-emphasis pixel no-select">
+        	Palette Generator
+        </h1>
+        <hr class="border border-secondary border-2 opacity-75">
+		<p class="lead">Generate a random palette...</p>
+		
+		<div class="row justify-content-center">
+		  <div class="col">
+		  	<div class="d-grid gap-2">
+			  	<button id="button-generate-palette" class="btn btn-primary">Generate a new palette</button>
+			 </div>
+		  </div>
+		  <div class="col">
+		  	<div class="input-group mb-3">
+		  	  <input id="input-palette-colors" type="number" class="form-control" aria-label="Number of Colors" value="8" step="8" min="8" max="64">
+		  	  <span class="input-group-text">colors</span>
+		  	</div>
+		  </div>
+		  <div class="col">
+		  	<div class="d-grid gap-2">
+			  	<button id="button-delete-palettes" class="btn btn-danger">Clear all palettes</button>
+			</div>
+		  </div>
+		</div>
+		<div id="palette-container"></div>
+	</div>
+</div>

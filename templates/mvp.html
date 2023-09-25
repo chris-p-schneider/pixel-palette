@@ -1,0 +1,178 @@
+{# IN: title #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- FAVICON -->
+	<link rel="icon" type="image/x-icon" 
+		  href="{{ url_for('static', filename='img/favicon.svg')}}">
+
+	<!-- GOOGLE FONTS -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+	<!-- CUSTOM CSS -->
+	<link href="{{ url_for('static', filename='css/mvp.css') }}" rel="stylesheet">
+
+	<!-- JAVASCRIPT -->
+	<script src="{{ url_for('static', filename='js/mvp.js') }}" defer></script>
+
+	<!-- TITLE -->
+	<title>{{ title }}</title>
+</head>
+<body>
+
+<!-- LOGO -->
+<h1 id="logo" class="pixel no-select">
+	{{ title }}
+</h1>	
+
+<!-- MAIN -->
+<main>
+	<div id="image-converter">
+        <h1 class="pixel no-select">
+        	Image Converter
+        </h1>
+        <hr>
+        <div class="row">
+        	<!-- START FORM -->
+			<!-- action="{{ url_for('convert') }}"  -->
+        	<form id="ic-form" 
+				  method="post"
+        		  enctype="multipart/form-data">
+
+        	<div class="col">
+		  		<!-- INPUT -->
+		  		<h2 class="pixel no-select">Input:</h2>
+
+		  		<img id="converter-image-input" 
+		  			 class="converter-image no-select" 
+		  			 src="">
+		  		<br>
+
+				<label for="ic-input-sample"
+					   class="no-select"
+					   style="margin-bottom: 5px;">
+					Select a Sample Image:
+				</label>
+		 		<select id="ic-input-sample"
+		 				name="ic-input-sample">
+				  	<option disabled selected>
+				  		No Image Selected</option>
+				  	<option value="mountains.png"
+				  			data-img-src="{{ url_for('static', filename='img/samples/mountains.png') }}">Mountains</option>
+
+				  	<option value="cat.png"
+				  			data-img-src="{{ url_for('static', filename='img/samples/cat.png') }}">Cat</option>
+
+				  	<option value="cactus.png"
+				  			data-img-src="{{ url_for('static', filename='img/samples/cactus.png') }}">Cactus</option>
+				</select>
+
+				<br>
+				<label for="ic-input-upload"
+					   class="no-select">
+					Upload a Custom Image:
+				</label>
+				<input id="ic-input-upload" 
+					   name="ic-input-upload"
+					   type="file" accept="image/*">
+        	</div>
+
+        	<div class="col">
+        	<!-- MODIFY	 -->
+		  		<h2 class="pixel no-select">Modify:</h2>
+        		<table id="ic-mod-table" class="no-select">
+        			<thead>
+        				<tr>
+        					<th></th>
+        					<th>Width</th>
+        					<th>Height</th>
+        				</tr>
+        			</thead>
+        			<tbody>
+        				<tr>
+        					<th>Input</th>
+        					<td>-</td>
+        					<td>-</td>
+        				</tr>
+        				<tr>
+        					<th>Output</th>
+        					<td>-</td>
+        					<input type="hidden"
+        						   id="ic-output-w"
+        						   name="ic-output-w"
+        						   value="">
+        					<td>-</td>
+        					<input type="hidden"
+        						   id="ic-output-h"
+        						   name="ic-output-h"
+        						   value="">
+        				</tr>
+        				<tr>
+        					<th>Upscaled</th>
+        					<td>-</td>
+        					<td>-</td>
+        				</tr>
+        			</tbody>
+        		</table>
+        		<br>
+        		<label id="ic-mod-upscale-label" 
+        			   for="ic-mod-upscale"
+        			   class="no-select">
+        			Upscale Output Image 
+        			<span>(x1)</span>
+        		</label>
+        		<input id="ic-mod-upscale" 
+        			   name="ic-mod-upscale" 
+        			   type="range" min="1" value="1" disabled>
+        		<br>
+        		<label id="ic-mod-colors-label" 
+        			   for="ic-mod-colors"
+        			   class="no-select">
+        			Output Image Colors 
+        			<span>(1)</span>
+        		</label>
+        		<input id="ic-mod-colors" 
+        			   name="ic-mod-colors" 
+        			   type="range" min="1" value="1" 
+        			   max="24" disabled>
+        		<br>
+        		<input type="submit" value="Convert Image" 
+        			   id="ic-mod-convert" 
+        			   disabled>
+        		</form> 
+        		<!-- END FORM -->
+        	</div>
+
+        	<div class="col">
+        	<!-- OUTPUT	-->
+		  		<h2 class="pixel no-select">Output:</h2>
+        		<img id="converter-image-output" 
+        			 data-loading-src = "{{ url_for('static', filename='img/loading.gif') }}"
+        			 data-error-src = "{{ url_for('static', filename='img/error.gif') }}"
+        			 class="converter-image no-select" 
+        			 src="">
+        			 <br>
+	        		<p id="ic-output-status"
+	        		   class="no-select">
+						Select an image to convert</p>
+					<br>
+					<a id="ic-output-link" href="" target="_blank">
+        			<input type="button" value="Save"
+        				   id="ic-output-save"
+        				   disabled>
+        			</a>
+        	</div>
+        </div>
+
+	</div>
+</main>
+
+<span id="to-top" class="no-select"><a href="#logo">▲</a></span>
+</body>
+</html>

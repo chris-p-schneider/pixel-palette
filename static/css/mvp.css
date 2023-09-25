@@ -1,0 +1,158 @@
+/*********************************************************/
+/* mvp.css */
+/*********************************************************/
+/* base */
+
+html {
+	scroll-behavior: smooth !important;
+	line-height: 1;
+	font-size: 16px;
+	font-family: 'Noto Sans Mono', monospace;
+}
+
+html, body, div {
+	position: relative;
+	margin: 0;
+	padding: 0;
+}
+
+body, main {
+	padding: 1rem;
+}
+
+h1, p {
+	line-height: 1;
+	margin: 0;
+}
+
+input, select, button,
+input::file-selector-button,
+td, th, p, a {
+	font-size: 1rem;
+	font-family: 'Noto Sans Mono', monospace;
+	padding: 5px;
+}
+
+input, button, select,
+input::file-selector-button {
+	cursor: pointer;
+}
+
+input::file-selector-button {
+	margin-right: 1rem;
+	padding-right: 10px;
+	padding-left: 10px;
+}
+
+table th, table td {
+	text-align: center;
+	padding: 5px 10px;
+}
+
+table th:first-child,
+table td:first-child {
+	text-align: right;
+}
+
+table td {
+	 background-color: hsla(0, 0%, 90%, 1.0);
+}
+
+/*********************************************************/
+/* layout */
+/*********************************************************/
+
+#ic-form, .row {
+	display: flex;
+	flex-flow: row wrap;
+}
+
+.col {
+	display: flex;
+	flex-flow: column wrap;
+}
+
+#image-converter .col {
+	flex-basis: calc(calc(100% / 3) - 2rem);
+	padding: 0 1rem;
+}
+
+#ic-form {
+	position: relative;
+	flex-basis: calc(calc(100% / 3) * 2);
+	padding: 0;
+	margin: 0;
+}
+
+#ic-form .col {
+	flex-basis: calc(50% - 2rem);
+}
+
+#ic-output-save {
+	padding-right: 15px;
+	padding-left: 15px;
+}
+
+/*********************************************************/
+/* modules */
+/*********************************************************/
+
+.converter-image {
+	min-height: 464px;
+	max-width: 100%;
+	object-fit: contain;
+	background-color: black;
+}
+
+#ic-output-status {
+	font-style: italic;
+}
+
+#logo {
+	font-size: 4rem;
+	font-weight: 700;
+}
+
+/* to top nav icon */ 
+#to-top {
+	cursor: pointer;
+	position: fixed;
+	right: 1rem;
+	bottom: 1rem;
+	
+	font-size: 1.5rem;
+	opacity: .5;
+	transition: opacity .3s ease-in-out;
+}
+#to-top:hover {
+	opacity: 1;
+}
+#to-top a {
+	text-decoration: none;
+	color: white;
+}
+
+/*********************************************************/
+/* theme */
+/*********************************************************/
+
+/* main themed font */
+.pixel {
+	font-family: 'Silkscreen', cursive;	
+}
+
+/*********************************************************/
+/* state */
+/*********************************************************/
+
+.no-select {
+	-webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10 and IE 11 */
+	user-select: none; /* Standard syntax */
+}
+
+*:disabled {
+	cursor: not-allowed;
+}
+
+/*********************************************************/

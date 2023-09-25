@@ -1,0 +1,116 @@
+/* styles.css */
+/* custom styles to override BS5*/
+
+html {
+	scroll-behavior: smooth !important;
+}
+
+/* main themed font */
+.pixel {
+	font-family: 'Silkscreen', cursive;	
+}
+
+#logo {
+	font-size: 4rem;
+	font-weight: 700;
+	margin-top: 1rem;
+}
+
+.sticky-header {
+	position: sticky;
+	width: 100%;
+	top: 0;
+	left: 0;
+	right: 0;
+	background-color: #212529;
+	z-index: 100;
+	padding-bottom: 1rem !important;
+	filter: drop-shadow(0 1px 5px hsla(0, 0%, 0%, 0.34));
+}
+
+/* offset scroll for header */
+main * {
+	scroll-margin-top: 5rem;
+}
+
+/* to top nav icon */ 
+#to-top {
+	cursor: pointer;
+	position: fixed;
+	right: 1rem;
+	bottom: 1rem;
+	
+	font-size: 1.5rem;
+	opacity: .5;
+	transition: opacity .3s ease-in-out;
+}
+#to-top:hover {
+	opacity: 1;
+}
+#to-top a {
+	text-decoration: none;
+	color: white;
+}
+
+/* state class */
+.no-select {
+	-webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10 and IE 11 */
+	user-select: none; /* Standard syntax */
+}
+
+#palette-container {
+	min-height: 0px;
+	transition: height .5s linear;
+	overflow: hidden;
+}
+
+.palette {
+	width: 100%;
+	margin: 2rem auto 2rem auto;
+	position: relative;
+	
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: flex-start;
+	align-items: center;
+	align-content: center;
+	
+	max-height: calc(40px * 8);
+	overflow: hidden;
+	opacity: 1;
+	transition: max-height .5s linear, opacity .5s linear;
+}
+
+.palette-color {
+	flex-basis: calc(100% / 8);
+	min-height: 40px;
+	cursor: copy;
+}
+
+.palette-color:active {
+	cursor: grabbing;
+}
+
+.palette:last-child {
+	margin-bottom: 0;
+}
+
+/* ANIMATIONS */
+
+.wipe {
+	animation: wipe .5s linear backwards;
+}
+
+@keyframes wipe {
+	67% {
+		max-height: 0px;		
+	}
+	99% {
+		margin: 0;
+		opacity: 0;
+	}
+	100% {
+		display: none;
+	}
+}
