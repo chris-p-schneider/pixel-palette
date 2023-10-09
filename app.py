@@ -6,16 +6,27 @@ from flask import Flask, render_template, request, jsonify, url_for
 from werkzeug.utils import secure_filename
 from io import BytesIO
 from PIL import Image
-import os
-import json
+import os, json, time, math
 from Pyxeled import pyxeled
-import time
+from py import palette
 
 ###############################################
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = os.path.abspath('static/img/output/')
 app.config['MAX_CONTENT_PATH'] = 1 * 1024
+
+###############################################
+
+def seconds_to_MMSSmm(seconds):
+	M = 0
+	s = math.floor(seconds)
+	m = math.floor((seconds - s) * 100)
+	if seconds > 60:
+		m = math.floor(seconds / 60)
+		s = seconds - (m * 60)
+		return '{}:{}:{}'.format(str(M).zfill(2), str(s).zfill(2), str(m).zfill(2));
+	return '{}:{}'.format(str(s).zfill(2), str(m).zfill(2));
 
 ###############################################
 
@@ -26,12 +37,35 @@ def main():
 
 ###############################################
 
-@app.route('/convert', methods=['POST'])
-def convert():
+@app.route('/input_palette', methods=['POST'])
+def input_palette():
+	print('@/input_palette')
 	print(json.dumps(request.form, indent=4))
 
-	###########################################################
+	if request.files.get('ic-input-upload'):
+		print(' --> has file')
+		f = request.files['ic-input-upload']
+		output_f = secure_filename(f.filename)
+		f_bytes = f.read() # convert file to binary
+		image = Image.open(BytesIO(f_bytes))
+	elif request.form.get('ic-input-sample'):
+		print(' --> has sample')
+		output_f = request.form['ic-input-sample']
+		image = Image.open(os.path.join(os.path.abspath('static/img/samples'), output_f))
+	else:
+		print('Error retrieving input image!')
 
+	input_palette = palette.get_dominant_palette(image, 16, True)
+	print(':: returning input_palette')
+	print(json.dumps(input_palette, indent=4))
+	return jsonify(input_palette)
+
+###############################################
+
+@app.route('/convert', methods=['POST'])
+def convert():
+	print('@/convert')
+	print(json.dumps(request.form, indent=4))
 	output_f = 'output.jpg'
 
 	# get image from form submission
@@ -74,19 +108,24 @@ def convert():
 			image_upscaled = pixel_image.resize((scaled_w, scaled_h), Image.NEAREST)
 			upscaled_path = os.path.join(os.path.abspath('static/img/output/'), secure_filename(output_f))
 			image_upscaled.save(upscaled_path)
-			end_time = time.time()
-			total_time = end_time - start_time
+
+			output_palette = palette.get_dominant_palette(pixel_image, num_colors, False)
+
+			end_time = time.time()			
+			total_time = seconds_to_MMSSmm(end_time - start_time)
 			print(f'TOTAL TIME: {total_time}')
 
 	###########################################################
 	# return data here 🎁
-	data = {
-		'message': 'data received',
-	}
+	data = {}
+	if total_time:
+		data['time'] = total_time
+	if output_palette:
+		data['outPalette'] = output_palette
 	if upscaled_path:
 		data['outputImg'] = url_for('static', filename=f'img/output/{output_f}')
-
-	print('\nreturning json:')
+	
+	print(':: returning conversion:')
 	print(json.dumps(data, indent=4))
 	return jsonify(data)
 

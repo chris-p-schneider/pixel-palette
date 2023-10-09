@@ -2,12 +2,13 @@
 /* mvp.css */
 /*********************************************************/
 /* base */
-
-html {
-	scroll-behavior: smooth !important;
+:root {
 	line-height: 1;
 	font-size: 16px;
-	font-family: 'Noto Sans Mono', monospace;
+	font-family: 'Noto Sans Mono', monospace;	
+}
+html {
+	scroll-behavior: smooth !important;
 }
 
 html, body, div {
@@ -17,7 +18,7 @@ html, body, div {
 }
 
 body, main {
-	padding: 1rem;
+	padding: .5rem;
 }
 
 h1, p {
@@ -44,6 +45,10 @@ input::file-selector-button {
 	padding-left: 10px;
 }
 
+input, select, label, button {
+	max-width: 100%;
+}
+
 table th, table td {
 	text-align: center;
 	padding: 5px 10px;
@@ -62,6 +67,22 @@ table td {
 /* layout */
 /*********************************************************/
 
+#title-container {
+	position: relative;
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	align-content: center;
+	padding: 0 1rem;
+}
+#title-container img {
+	height: 2.25rem;
+	border: .25rem solid black;
+	margin-right: 1.5rem;
+	margin-top: 9px;
+}
+
 #ic-form, .row {
 	display: flex;
 	flex-flow: row wrap;
@@ -74,6 +95,8 @@ table td {
 
 #image-converter .col {
 	flex-basis: calc(calc(100% / 3) - 2rem);
+	min-width: calc(calc(100% / 3) - 2rem);
+	max-width: 30vw;
 	padding: 0 1rem;
 }
 
@@ -94,11 +117,58 @@ table td {
 }
 
 /*********************************************************/
+/* media */
+/*********************************************************/
+
+@media screen and (max-width: 1200px) {
+	#logo {
+		font-size: 2.6rem !important;
+	}
+	#image-converter > h1 {
+		font-size: 1.75rem;
+	}
+	#ic-form {
+		flex-basis: 100%;
+	}
+	#image-converter .col {
+		flex-basis: calc(calc(100% / 2) - 2rem);
+		min-width: calc(calc(100% / 2) - 2rem);
+		max-width: 50vw;
+	}
+}
+@media screen and (max-width: 900px) {
+	#logo {
+		font-size: 2rem !important;
+	}
+	#image-converter > h1 {
+		font-size: 1.5rem;
+	}
+	#ic-form {
+		flex-basis: 200%;
+	}
+	#image-converter .col {
+		flex-basis: calc(100% - 2rem);
+		min-width: calc(100% - 2rem);
+		max-width: 90vw;
+	}
+}
+@media screen and (max-width: 450px) {
+	:root {
+		font-size: 14px;
+	}
+}
+@media screen and (max-width: 355px) {
+	:root {
+		font-size: 12px;
+	}
+}
+/*********************************************************/
 /* modules */
 /*********************************************************/
 
 .converter-image {
 	min-height: 464px;
+	max-height: 464px;
 	max-width: 100%;
 	object-fit: contain;
 	background-color: black;
@@ -106,6 +176,7 @@ table td {
 
 #ic-output-status {
 	font-style: italic;
+	word-break: break-all;
 }
 
 #logo {
@@ -131,6 +202,54 @@ table td {
 	text-decoration: none;
 	color: white;
 }
+
+/*********************************************************/
+/* palete form */
+/*********************************************************/
+
+.palette-form {
+	position: relative;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: stretch;
+	align-content: center;
+	margin-top: 5px;
+	gap: 5px 2%;
+}
+.palette-form .swatch {
+	padding: 0;
+	height: 2rem;
+}
+/* flex sizing for swatch counts */
+.sw_1 {
+	flex: 1;
+}
+.sw_4 {
+	flex-basis: calc(calc(94% / 4) - calc(2% / 4));
+}
+.sw_8 {
+	flex-basis: calc(calc(86% / 8) - calc(2% / 8));	
+}
+.palette-loader .swatch {
+	transition: opacity .3s ease-in-out;
+	animation: swatch-loading 1s infinite backwards;
+}
+.palette-form button {
+	flex-grow: 1;
+}
+/*********************************************************/
+/* animation */
+/*********************************************************/
+
+@keyframes swatch-loading {
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: .1;
+	}
+}
+
 
 /*********************************************************/
 /* theme */
