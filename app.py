@@ -23,8 +23,8 @@ def seconds_to_MMSSmm(seconds):
 	s = math.floor(seconds)
 	m = math.floor((seconds - s) * 100)
 	if seconds > 60:
-		m = math.floor(seconds / 60)
-		s = seconds - (m * 60)
+		M = math.floor(seconds / 60)
+		s = math.floor(seconds - (M * 60))
 		return '{}:{}:{}'.format(str(M).zfill(2), str(s).zfill(2), str(m).zfill(2));
 	return '{}:{}'.format(str(s).zfill(2), str(m).zfill(2));
 

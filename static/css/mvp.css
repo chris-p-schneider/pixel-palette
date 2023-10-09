@@ -5,7 +5,8 @@
 :root {
 	line-height: 1;
 	font-size: 16px;
-	font-family: 'Noto Sans Mono', monospace;	
+	font-family: 'Noto Sans Mono', monospace;
+	transition: background-color .3s ease-in, color .3s ease-in;
 }
 html {
 	scroll-behavior: smooth !important;
@@ -21,9 +22,18 @@ body, main {
 	padding: .5rem;
 }
 
-h1, p {
+h1, h2, h3, p {
 	line-height: 1;
 	margin: 0;
+}
+h2 {
+	font-size: 2rem;
+	margin-bottom: 1rem;
+}
+h3 {
+	font-size: 1.5rem;
+	margin-top: .5rem;
+	margin-bottom: .5rem;
 }
 
 input, select, button,
@@ -46,6 +56,7 @@ input::file-selector-button {
 }
 
 input, select, label, button {
+	width: 100%;
 	max-width: 100%;
 }
 
@@ -165,7 +176,14 @@ table td {
 /*********************************************************/
 /* modules */
 /*********************************************************/
-
+#theme-toggle {
+	font-size: 1.5rem;
+	position: absolute;
+	top: .5rem;
+	right: .5rem;
+	cursor: pointer;
+	user-select: none;
+}
 .converter-image {
 	min-height: 464px;
 	max-height: 464px;

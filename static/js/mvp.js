@@ -6,8 +6,10 @@
 // HMTL ELEMENTS
 ///////////////////////////////////////////////////////////////
 
-const logo 		= document.querySelector('div');
-const header 	= document.querySelector('header');
+const logo 		  = document.querySelector('div');
+const header 	  = document.querySelector('header');
+const themeToggle = document.querySelector('#theme-toggle');
+const themeStyles = document.querySelector('#theme-style');
 
 const imageConversionForm   = document.querySelector('#ic-form');
 const inputImage			= document.querySelector('#converter-image-input');
@@ -36,6 +38,33 @@ const paletteOutput = document.querySelector('#palette-output');
 
 // changes active nav link on click
 function loadEvents() {
+	// add theme toggle
+	themeToggle.addEventListener('click', () => {
+		if (themeToggle.textContent == '🌞') {
+			themeToggle.textContent = '🌒';
+			themeStyles.innerHTML = 
+				`:root {
+					color: hsla(0, 0%, 95%, 1);
+					background-color: hsla(0, 0%, 5%, 1.0);
+				}
+				td, input, select, button {
+					background-color: hsla(0, 0%, 10%, 1.0) !important;
+					color: hsla(0, 0%, 95%, 1);
+				}
+				h2 {
+					color: hsla(0, 0%, 90%, 1.0) !important;
+				}
+				`;
+		}
+		else {
+			themeToggle.textContent = '🌞';
+			themeStyles.innerHTML = 
+				`:root {
+					color: hsla(0, 0%, 0%, 1);
+					background-color: hsla(0, 0%, 99%, 1.0);
+				}`;
+		}
+	});
 	// update sample images
 	inputSampleDropdown.addEventListener('change', (e) => {
 		let selected = inputSampleDropdown.selectedOptions;

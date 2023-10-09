@@ -13,8 +13,10 @@ def get_dominant_palette(img, colors_out, is_input):
 
 	img = img.convert('RGB')
 	if is_input:
-		img = img.filter(ImageFilter.GaussianBlur(radius = 10))
-		img = ImageOps.posterize(img, 4)
+		# img = img.filter(ImageFilter.GaussianBlur(radius = 5))
+		# img.show()
+		img = ImageOps.posterize(img, 3)
+		# img.show()
 		img = img.reduce(2)
 	# img.show()
 	palette = img.getcolors(maxcolors = img.width * img.height)

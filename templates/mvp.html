@@ -17,6 +17,7 @@
 
 	<!-- CUSTOM CSS -->
 	<link href="{{ url_for('static', filename='css/mvp.css') }}" rel="stylesheet">
+	<style id="theme-style"></style>
 
 	<!-- JAVASCRIPT -->
 	<script src="{{ url_for('static', filename='js/chroma.min.js') }}" defer></script>
@@ -34,14 +35,15 @@
 	<h1 id="logo" class="pixel no-select">
 		{{ title }}
 	</h1>
+	<span id="theme-toggle">🌞</span>
 </div>
 
 <!-- MAIN -->
 <main>
 	<div id="image-converter">
-        <h1 class="pixel no-select">
+        <h2 class="pixel no-select">
         	Image Converter
-        </h1>
+        </h2>
         <hr>
         <div class="row">
         	<!-- START FORM -->
@@ -52,7 +54,7 @@
 
         	<div class="col">
 		  		<!-- INPUT -->
-		  		<h2 class="pixel no-select">Input:</h2>
+		  		<h3 class="pixel no-select">Input:</h3>
 
 		  		<img id="converter-image-input" 
 		  			 class="converter-image no-select" 
@@ -91,7 +93,7 @@
 
         	<div class="col">
         	<!-- MODIFY	 -->
-		  		<h2 class="pixel no-select">Modify:</h2>
+		  		<h3 class="pixel no-select">Modify:</h3>
         		<table id="ic-mod-table" class="no-select">
         			<thead>
         				<tr>
@@ -166,11 +168,11 @@
         			   for="ic-mod-colors"
         			   class="no-select">
         			Approximate Output Colors 
-        			<span>(2)</span>
+        			<span>(4)</span>
         		</label>
         		<input id="ic-mod-colors" 
         			   name="ic-mod-colors" 
-        			   type="range" min="2" value="2" 
+        			   type="range" min="2" value="4" 
         			   max="24" disabled>
         		<br>
         		<input type="submit" value="Convert Image" 
@@ -182,7 +184,7 @@
 
         	<div class="col">
         	<!-- OUTPUT	-->
-		  		<h2 class="pixel no-select">Output:</h2>
+		  		<h3 class="pixel no-select">Output:</h3>
         		<img id="converter-image-output" 
         			 data-loading-src = "{{ url_for('static', filename='img/loading.gif') }}"
         			 data-error-src = "{{ url_for('static', filename='img/error.gif') }}"
