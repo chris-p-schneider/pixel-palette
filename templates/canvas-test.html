@@ -1,0 +1,178 @@
+<!-- canvas-test.html -->
+{# IN: title #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- FAVICON -->
+	<link rel="icon" type="image/x-icon" 
+		  href="{{ url_for('static', filename='img/favicon.svg')}}">
+
+	<!-- GOOGLE FONTS -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+	<!-- CUSTOM CSS -->
+	<link href="{{ url_for('static', filename='css/mvp.css') }}" rel="stylesheet">
+	<style id="theme-style"></style>
+
+	<style>
+		main * {
+			flex-basis: 1;
+		}
+		td {
+			width: 20vw;
+		}
+	</style>
+
+	<!-- JAVASCRIPT -->
+	<script src="{{ url_for('static', filename='js/chroma.min.js') }}" defer></script>
+<!-- 	<script src="{{ url_for('static', filename='js/palette.js') }}" defer></script>
+	<script src="{{ url_for('static', filename='js/mvp.js') }}" defer></script>
+ -->
+	<!-- TITLE -->
+	<title>{{ title }}</title>
+</head>
+<body>
+
+<!-- LOGO -->
+<div id="title-container">
+	<img src="{{ url_for('static', filename='img/favicon.svg')}}">
+	<h1 id="logo" class="pixel no-select">
+		{{ title }}
+	</h1>
+</div>
+
+<!-- MAIN -->
+<main style="display: flex; flex-flow: row wrap; justify-content: center;">
+	
+		<table style="height: 100%;">
+		  <thead>
+		    <tr>
+		      <th>Source</th>
+		      <th>Drawn</th>
+		      <th>Canvas</th>
+		      <th>Hovered color</th>
+		      <th>Selected color</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr>
+		    	<td>
+		    		<img src="{{ url_for('static', filename='img/output/cat.png')}}"
+		    			 style="width: 160px; height: auto">
+		    	</td>
+		      <td>
+		        <canvas id="drawn" width="160px" height="160px"
+		        	    style="border: 1px solid black"></canvas>
+		      </td>
+		      <td>
+		        <canvas id="canvas" width="160px" height="160px"
+		        	    ></canvas>
+		      </td>
+		      <td class="color-cell" id="hovered-color"></td>
+		      <td class="color-cell" id="selected-color"></td>
+		    </tr>
+		  </tbody>
+		</table>
+</main>
+</body>
+<script>
+	
+	////////////////////////////////////////////////////////////////////////
+
+	const image = document.querySelector('img');
+
+	const dImg = new Image();
+	dImg.crossOrigin = 'anonymous';
+	dImg.src = '{{ url_for('static', filename='img/output/cat.png')}}';
+
+	const drawn = document.querySelector('#drawn');
+	const context = drawn.getContext('2d');
+
+	dImg.addEventListener('load', () => {
+
+		context.drawImage(dImg, 0, 0);
+		dImg.style.display = 'none';
+
+		let scale = 20;
+		let scaledHeight = dImg.height / scale;
+		let scaledWidth = dImg.width / scale;
+
+		let pixelGrid = [];
+
+		console.log('scaled w, h:', scaledWidth, scaledHeight);
+		for (let r = 0; r < scaledHeight; r++) { // height, y
+			let pixelRow = []
+			for (let c = 0; c < scaledWidth; c++) { // width, x
+				let wSnippet = (((c + 1) * scale) - 1);
+				let hSnippet = (((r + 1) * scale) - 1);
+				let data = context.getImageData(wSnippet, hSnippet, 
+												wSnippet, hSnippet).data;
+				let color = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${data[3]/255})`;
+				pixelRow.push(color);
+
+				context.fillStyle = color;
+				let fillX = c * scale;
+				let fillY = r * scale;
+				context.fillRect(fillX, fillY, scale, scale);
+			}
+			pixelGrid.push(pixelRow);
+		}
+		console.log('pixelGrid', pixelGrid);
+		// drawn.style.display = 'none';
+	});
+
+	/*
+	p_size = img.width / upscale
+	for p in (img[row] / p_size):
+		for p in (img[col] / p_size):
+			getColor
+			draw rect (rect.width = rect.height = p_size)
+			increment by p_size
+	*/
+
+
+
+	////////////////////////////////////////////////////////////////////////
+
+	// https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Pixel_manipulation_with_canvas
+
+	const img = new Image();
+	img.crossOrigin = "anonymous";
+	img.src = "{{ url_for('static', filename='img/output/cat.png')}}";
+
+	const canvas = document.getElementById("canvas");
+	const ctx = canvas.getContext("2d");
+	img.addEventListener("load", () => {
+	  ctx.drawImage(img, 0, 0);
+	  img.style.display = "none";
+	});
+	const hoveredColor = document.getElementById("hovered-color");
+	const selectedColor = document.getElementById("selected-color");
+
+	function pick(event, destination) {
+	  const bounding = canvas.getBoundingClientRect();
+	  const x = event.clientX - bounding.left;
+	  const y = event.clientY - bounding.top;
+	  const pixel = ctx.getImageData(x, y, 1, 1);
+	  const data = pixel.data;
+
+	  const rgba = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${data[3] / 255})`;
+	  destination.style.background = rgba;
+	  destination.textContent = rgba;
+
+	  return rgba;
+	}
+
+	canvas.addEventListener("mousemove", (event) => pick(event, hoveredColor));
+	canvas.addEventListener("click", (event) => pick(event, selectedColor));
+
+	////////////////////////////////////////////////////////////////////////
+
+</script>
+</html>

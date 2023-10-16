@@ -22,6 +22,7 @@
 	<!-- JAVASCRIPT -->
 	<script src="{{ url_for('static', filename='js/chroma.min.js') }}" defer></script>
 	<script src="{{ url_for('static', filename='js/palette.js') }}" defer></script>
+	<script src="{{ url_for('static', filename='js/svg.js') }}" defer></script>
 	<script src="{{ url_for('static', filename='js/mvp.js') }}" defer></script>
 
 	<!-- TITLE -->
@@ -83,7 +84,8 @@
 
 				<br>
 				<label for="ic-input-upload"
-					   class="no-select">
+					   class="no-select"
+					   style="margin-bottom: 7.5px;">
 					Upload a Custom Image:
 				</label>
 				<input id="ic-input-upload" 
@@ -130,7 +132,7 @@
 		        		<label id="ic-output-w-label" 
 		        			   for="ic-output-w"
 		        			   class="no-select"
-		        			   style="margin-bottom: 5px;">
+		        			   style="margin-bottom: 7.5px;">
 		        			Output Width 
 		        			<span>(px)</span>
 		        		</label>
@@ -143,7 +145,7 @@
 		        		<label id="ic-output-h-label" 
 		        			   for="ic-output-h"
 		        			   class="no-select"
-		        			   style="margin-bottom: 5px;">
+		        			   style="margin-bottom: 7.5px;">
 		        			Output Height
 		        			<span>(px)</span>
 		        		</label>
@@ -167,7 +169,7 @@
         		<label id="ic-mod-colors-label" 
         			   for="ic-mod-colors"
         			   class="no-select">
-        			Approximate Output Colors 
+        			Maxmimum Output Colors 
         			<span>(4)</span>
         		</label>
         		<input id="ic-mod-colors" 
@@ -185,11 +187,13 @@
         	<div class="col">
         	<!-- OUTPUT	-->
 		  		<h3 class="pixel no-select">Output:</h3>
+		  		<div id="output-image-container">
         		<img id="converter-image-output" 
         			 data-loading-src = "{{ url_for('static', filename='img/loading.gif') }}"
         			 data-error-src = "{{ url_for('static', filename='img/error.gif') }}"
         			 class="converter-image no-select" 
         			 src="">
+        		</div>
 					<div id="palette-output"></div>
         			 <br>
 	        		<p id="ic-output-status"

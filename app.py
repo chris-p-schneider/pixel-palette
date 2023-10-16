@@ -37,6 +37,13 @@ def main():
 
 ###############################################
 
+@app.route('/canvas')
+def canvas():
+	return render_template('canvas-test.html', 
+							title='Pixel-Palettes')
+
+###############################################
+
 @app.route('/input_palette', methods=['POST'])
 def input_palette():
 	print('@/input_palette')
@@ -107,7 +114,7 @@ def convert():
 			# upscale image here 🔎
 			image_upscaled = pixel_image.resize((scaled_w, scaled_h), Image.NEAREST)
 			upscaled_path = os.path.join(os.path.abspath('static/img/output/'), secure_filename(output_f))
-			image_upscaled.save(upscaled_path)
+			image_upscaled.save(upscaled_path, 'png')
 
 			output_palette = palette.get_dominant_palette(pixel_image, num_colors, False)
 
@@ -118,6 +125,7 @@ def convert():
 	###########################################################
 	# return data here 🎁
 	data = {}
+	data['request'] = request.form
 	if total_time:
 		data['time'] = total_time
 	if output_palette:

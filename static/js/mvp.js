@@ -26,6 +26,7 @@ const colorsLabelSpan		= document.querySelector('#ic-mod-colors-label span');
 const colorsSlider 			= document.querySelector('#ic-mod-colors');
 const convert 				= document.querySelector('#ic-mod-convert');
 
+const outputContainer		= document.querySelector('#output-image-container');
 const outputImage			= document.querySelector('#converter-image-output');
 const status 				= document.querySelector('#ic-output-status'); 
 const saveButton 			= document.querySelector('#ic-output-save');
@@ -65,6 +66,7 @@ function loadEvents() {
 				}`;
 		}
 	});
+	themeToggle.click();
 	// update sample images
 	inputSampleDropdown.addEventListener('change', (e) => {
 		let selected = inputSampleDropdown.selectedOptions;
@@ -230,8 +232,9 @@ function requestInputPalette(e) {
 function submitConversionForm(e) {
 	e.preventDefault();
 	const formData = new FormData(e.target);
+	outputContainer.innerHTML = '';
 	paletteOutput.innerHTML = '';
-	paletteOutput.appendChild(new PaletteLoader(colorsSlider.value, true).generateForm())
+	paletteOutput.appendChild(new PaletteLoader(colorsSlider.value, true).generateForm());
 
 	fetch('/convert', {
 	    method: 'POST',
@@ -239,14 +242,21 @@ function submitConversionForm(e) {
 	})
 	.then(response => response.json())
 	.then(data => {
-	    console.log(data);
+	    console.log('conversion data', data);
 	    if (data.outputImg) {
+
 	    	outputImage.src = `${data.outputImg}?${new Date().getTime()}`;
+	    	outputImage.style.display = 'none';
 	    	saveImgLink.href = data.outputImg;
 			status.textContent = `Image converted successfully in ${data.time}!`;
 	    	resetWhenLoaded(true);
+   	    	
+   	    	const palette = new Palette(JSON.stringify(data.outPalette));
+   			const svg = new OutputSVG(outputContainer, palette, data);
+   			svg.renderHTML();
+
 	    	paletteOutput.innerHTML = '';
-	    	paletteOutput.appendChild(new Palette(JSON.stringify(data.outPalette)).generateForm());
+	    	paletteOutput.appendChild(palette.generateForm());
 	    }
 	    else {
 			imageOutputError();
@@ -256,7 +266,7 @@ function submitConversionForm(e) {
 	    console.error('Error:', error);
 		imageOutputError();
 		paletteOutput.innerHTML = '';
-		paletteOutput.appendChild(new PaletteLoader(colorsSlider.value, false).generateForm())
+		paletteOutput.appendChild(new PaletteLoader(colorsSlider.value, false).generateForm());
 	});
 	disableWhileLoading();
 	return false;
