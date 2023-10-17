@@ -129,9 +129,7 @@ class OutputSVG {
 			group.setAttribute('fill', this.colors.at(color).rgb);
 			group.setAttribute('data-pixel-group', color);
 			for (let r = 0; r < this.pixelGrid.length; r++) {
-				// console.log('\tin r');
 				for (let c = 0; c < this.pixelGrid.at(r).length; c++) {
-					// console.log('\t\tin c');
 					if (this.pixelGrid.at(r).at(c) == this.colors.at(color).rgb) {
 						const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
 						rect.setAttribute('x', c * this.scale);

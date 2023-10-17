@@ -72,8 +72,8 @@
 	width: 100%;
 	height: auto;
 	max-height: 100%;
+	animation: fade-in .34s ease-in forwards;
 }
-
 g {
 	shape-rendering: crispEdges;
 }

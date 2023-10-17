@@ -4,6 +4,7 @@
 
 input:not(.swatch):disabled, button:disabled {
 	opacity: .67;
+	cursor: not-allowed;
 }
 
 #to-top:hover {

@@ -12,3 +12,30 @@
 }
 
 /*********************************************************/
+
+.fade-in {
+	animation: fade-in .34s ease-in-out forwards;
+}
+.fade-out {
+	animation: fade-out .34s ease-in-out forwards;
+}
+
+@keyframes fade-in {
+	from {
+		opacity: 0;
+		filter: brightness(0);
+	}
+	to {
+		opacity: 1;
+		filter: brightness(1);
+	}
+}
+@keyframes fade-out {
+	to {
+		opacity: 0;
+		filter: brightness(0);
+	}
+}
+
+
+/*********************************************************/

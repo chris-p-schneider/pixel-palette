@@ -6,10 +6,10 @@
 // HMTL ELEMENTS
 ///////////////////////////////////////////////////////////////
 
-const logo 		  = document.querySelector('div');
-const header 	  = document.querySelector('header');
-const themeToggle = document.querySelector('#theme-toggle');
-const themeStyles = document.querySelector('#theme-style');
+const logo 		  			= document.querySelector('div');
+const header 	  			= document.querySelector('header');
+const themeToggle 			= document.querySelector('#theme-toggle');
+const themeStyles 			= document.querySelector('#theme-style');
 
 const imageConversionForm   = document.querySelector('#ic-form');
 const inputImage			= document.querySelector('#converter-image-input');
@@ -35,49 +35,68 @@ const savePngLink 			= document.querySelector('#ic-output-png-link');
 const saveSvgLink 			= document.querySelector('#ic-output-svg-link');
 const saveSvgButton 		= document.querySelector('#ic-output-svg-save');
 
-const paletteInput 	= document.querySelector('#palette-input');
-const paletteOutput = document.querySelector('#palette-output');
+const paletteInput 			= document.querySelector('#palette-input');
+const paletteOutput 		= document.querySelector('#palette-output');
 
 ///////////////////////////////////////////////////////////////
+// toggles light/dark theme
+///////////////////////////////////////////////////////////////
 
-// changes active nav link on click
+function toggleTheme() {
+	if (themeToggle.textContent == '🌞') {
+		themeToggle.textContent = '🌒';
+		themeStyles.innerHTML = 
+			`:root {
+				color: hsla(0, 0%, 95%, 1);
+				background-color: hsla(0, 0%, 5%, 1.0);
+			}
+			td, input, select, button {
+				background-color: hsla(0, 0%, 10%, 1.0) !important;
+				color: hsla(0, 0%, 95%, 1);
+			}
+			h2 {
+				color: hsla(0, 0%, 90%, 1.0) !important;
+			}`;
+	}
+	else {
+		themeToggle.textContent = '🌞';
+		themeStyles.innerHTML = 
+			`:root {
+				color: hsla(0, 0%, 0%, 1);
+				background-color: hsla(0, 0%, 99%, 1.0);
+			}`;
+	}
+}
+
+// temporarily adds animation to image on load
+function addRemoveImgLoadAnimation(img) {
+	const originalClass = img.className;
+	const fadeIn = `${originalClass} fade-in`;
+	const fadeOut = `${originalClass} fade-out`;
+	img.setAttribute('class', fadeIn);
+	setTimeout(() => {
+		img.setAttribute('class', originalClass);
+	}, 340);
+}
+
+///////////////////////////////////////////////////////////////
+// initialize page elements and events
+///////////////////////////////////////////////////////////////
+
 function loadEvents() {
 	// add theme toggle
-	themeToggle.addEventListener('click', () => {
-		if (themeToggle.textContent == '🌞') {
-			themeToggle.textContent = '🌒';
-			themeStyles.innerHTML = 
-				`:root {
-					color: hsla(0, 0%, 95%, 1);
-					background-color: hsla(0, 0%, 5%, 1.0);
-				}
-				td, input, select, button {
-					background-color: hsla(0, 0%, 10%, 1.0) !important;
-					color: hsla(0, 0%, 95%, 1);
-				}
-				h2 {
-					color: hsla(0, 0%, 90%, 1.0) !important;
-				}
-				`;
-		}
-		else {
-			themeToggle.textContent = '🌞';
-			themeStyles.innerHTML = 
-				`:root {
-					color: hsla(0, 0%, 0%, 1);
-					background-color: hsla(0, 0%, 99%, 1.0);
-				}`;
-		}
-	});
+	themeToggle.addEventListener('click', toggleTheme);
 	themeToggle.click();
 	// update sample images
 	inputSampleDropdown.addEventListener('change', (e) => {
 		let selected = inputSampleDropdown.selectedOptions;
+		inputImageFile.value = '';
 		loadImageSrc(selected[0].dataset.imgSrc);
 		requestInputPalette(e);
 		outputImage.src = '';
-		savePngButton.setAttribute('disabled', '');
-		saveSvgButton.setAttribute('disabled', '');
+		outputContainer.innerHTML = '';
+		savePngButton.disabled = true;
+		saveSvgButton.disabled = true;
 	});
 	// update user image
 	inputImageFile.addEventListener('change', (e) => {
@@ -142,8 +161,8 @@ function removeDisabled() {
 // validate and preview image upload
 function uploadImage(e) {
 	const inputImg = e.target;
-	const file = inputImg.files[0];
-	const maxSize = 1024 * 1024; // 1 MB
+	const file 	   = inputImg.files[0];
+	const maxSize  = 1024 * 1024; // 1 MB
 
 	if (file && file.size > maxSize) {
 	    alert('Please select an image less than 1 MB in size.');
@@ -156,7 +175,7 @@ function uploadImage(e) {
 		const reader = new FileReader();
 		reader.onload = (e) => {
 		    inputImage.src = e.target.result;
-
+			addRemoveImgLoadAnimation(inputImage);
 			inputImage.complete
 				? addTableData()
 				: inputImage.onload = addTableData
@@ -170,15 +189,20 @@ function uploadImage(e) {
 
 // loads the input image preview
 function loadImageSrc(src) {
-	inputImage.src = src;
-	inputImage.complete
-		? addTableData()
-		: inputImage.onload = addTableData
-	inputImageFile.value = '';
-	savePngLink.href = '';
-	saveSvgLink.href = '';
-	removeDisabled();
-	status.textContent = 'Modify then press \'Convert Image\'';
+	preloadImage = new Image();
+	preloadImage.src = src;
+	preloadImage.addEventListener('load', () => {
+		inputImage.src = src;
+		addRemoveImgLoadAnimation(inputImage);
+		inputImage.complete
+			? addTableData()
+			: inputImage.onload = addTableData
+		status.textContent = 'Modify then press \'Convert Image\'';
+		inputImageFile.value = '';
+		savePngLink.href = '';
+		saveSvgLink.href = '';
+		removeDisabled();
+	});
 }
 
 /* populates the modify table when selecting an input image
@@ -205,7 +229,7 @@ function addTableData() {
 }
 
 function imageOutputError() {
-   	outputImage.src = outputImage.dataset.errorSrc;
+   	outputImage.src    = outputImage.dataset.errorSrc;
 	status.textContent = 'Error converting image!';
    	resetWhenLoaded(false);
 }
@@ -213,10 +237,11 @@ function imageOutputError() {
 // send input image to get palette
 function requestInputPalette(e) {
 	paletteInput.innerHTML = '';
-	paletteInput.appendChild(new PaletteLoader(16, true).generateForm())
 	paletteOutput.innerHTML = '';
-	paletteOutput.appendChild(new PaletteLoader(colorsSlider.value, false).generateForm())
+	paletteInput.appendChild(new PaletteLoader(16, true).generateForm());
+	paletteOutput.appendChild(new PaletteLoader(colorsSlider.value, false).generateForm());
 	const formData = new FormData(imageConversionForm);
+	
 	fetch('/input_palette', {
 	    method: 'POST',
 	    body: formData
@@ -250,9 +275,7 @@ function submitConversionForm(e) {
 	.then(data => {
 	    console.log('conversion data', data);
 	    if (data.outputImg) {
-
 	    	outputImage.src = `${data.outputImg}?${new Date().getTime()}`;
-	    	outputImage.style.display = 'none';
 	    	savePngLink.href = data.outputImg;
 			status.textContent = `Image converted successfully in ${data.time}!`;
 	    	resetWhenLoaded(true);
@@ -260,7 +283,6 @@ function submitConversionForm(e) {
    	    	const palette = new Palette(JSON.stringify(data.outPalette));
    			const svg = new OutputSVG(outputContainer, palette, data);
    			svg.renderHTML();
-
 	    	paletteOutput.innerHTML = '';
 	    	paletteOutput.appendChild(palette.generateForm());
 	    }
@@ -272,7 +294,8 @@ function submitConversionForm(e) {
 	    console.error('Error:', error);
 		imageOutputError();
 		paletteOutput.innerHTML = '';
-		paletteOutput.appendChild(new PaletteLoader(colorsSlider.value, false).generateForm());
+		paletteOutput.appendChild(new PaletteLoader(
+			colorsSlider.value, false).generateForm());
 	});
 	disableWhileLoading();
 	return false;
@@ -280,13 +303,13 @@ function submitConversionForm(e) {
 
 // disables inputs while processing an image
 function disableWhileLoading() {
-	inputSampleDropdown.disabled 	= true;
-	inputImageFile.disabled 		= true;
-	imageOutputW.disabled			= true;
-	imageOutputH.disabled 			= true;
-	upscaleSlider.disabled 			= true;
-	colorsSlider.disabled 			= true;
-	convert.disabled 				= true;
+	inputSampleDropdown.disabled = true;
+	inputImageFile.disabled 	 = true;
+	imageOutputW.disabled		 = true;
+	imageOutputH.disabled 		 = true;
+	upscaleSlider.disabled 		 = true;
+	colorsSlider.disabled 		 = true;
+	convert.disabled 			 = true;
 	outputImage.src = outputImage.dataset.loadingSrc;
 	inputImageFile.value
 		? status.textContent = `Converting '${inputImageFile.value}'...`
@@ -295,13 +318,13 @@ function disableWhileLoading() {
 
 // resets disabled inputs after an output image is loaded
 function resetWhenLoaded(successful) {
-	inputSampleDropdown.disabled 	= false;
-	inputImageFile.disabled 		= false;
-	imageOutputW.disabled			= false;
-	imageOutputH.disabled 			= false;
-	upscaleSlider.disabled 			= false;
-	colorsSlider.disabled 			= false;
-	convert.disabled 				= false;
+	inputSampleDropdown.disabled = false;
+	inputImageFile.disabled 	 = false;
+	imageOutputW.disabled		 = false;
+	imageOutputH.disabled 		 = false;
+	upscaleSlider.disabled 		 = false;
+	colorsSlider.disabled 		 = false;
+	convert.disabled 			 = false;
 	if (successful) {
 		savePngButton.removeAttribute('disabled');
 		saveSvgButton.removeAttribute('disabled');
