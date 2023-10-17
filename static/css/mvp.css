@@ -60,6 +60,13 @@ input, select, label, button {
 	max-width: 100%;
 }
 
+input, button {
+	transition: opacity .2s ease-in-out;
+}
+input:not(.swatch):disabled, button:disabled {
+	opacity: .67;
+}
+
 table th, table td {
 	text-align: center;
 	padding: 5px 10px;
@@ -237,6 +244,10 @@ table td {
 .output-svg-container {
 	min-height: 464px;
 	max-height: 464px;
+
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
 }
 .output-svg-container canvas {
 	z-index: -1;

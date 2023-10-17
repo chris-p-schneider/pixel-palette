@@ -1,0 +1,54 @@
+/*********************************************************/
+/* layout.css */
+/*********************************************************/
+
+#title-container {
+	position: relative;
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	align-content: center;
+	padding: 0 1rem;
+}
+#title-container img {
+	height: 2.25rem;
+	border: .25rem solid black;
+	margin-right: 1.5rem;
+	margin-top: 9px;
+}
+
+#ic-form, .row {
+	display: flex;
+	flex-flow: row wrap;
+}
+
+.col {
+	display: flex;
+	flex-flow: column wrap;
+}
+
+#image-converter .col {
+	flex-basis: calc(calc(100% / 3) - 2rem);
+	min-width: calc(calc(100% / 3) - 2rem);
+	max-width: 30vw;
+	padding: 0 1rem;
+}
+
+#ic-form {
+	position: relative;
+	flex-basis: calc(calc(100% / 3) * 2);
+	padding: 0;
+	margin: 0;
+}
+
+#ic-form .col {
+	flex-basis: calc(50% - 2rem);
+}
+
+#ic-output-save {
+	padding-right: 15px;
+	padding-left: 15px;
+}
+
+/*********************************************************/

@@ -100,6 +100,7 @@ class Palette {
 		});
 		if (!this.isInput) {
 			const reset = document.createElement('button');
+			reset.setAttribute('style', 'margin-top: 5px');
 			reset.textContent = 'Reset Palette';
 			reset.addEventListener('click', (e) => {
 				e.preventDefault();
@@ -165,32 +166,5 @@ class PaletteLoader {
 	}
 }
 
-
-///////////////////////////////////////////////////////////////
-
-const d = JSON.stringify({
-		'isInput': true,
-		'colorsTotal': 3,
-		'pixelsTotal': 3,
-		'colors': [
-			{
-				'rgb': 'rgb(255, 0, 0)',
-				'pixels': 1
-			},
-			{
-				'rgb': 'rgb(0, 255, 0)',
-				'pixels': 1
-			},
-			{
-				'rgb': 'rgb(0, 0, 255)',
-				'pixels': 1
-			}		
-		]
-	});
-
-// const p = new Palette(d);
-
-// const test = document.querySelector('#test');
-// test.appendChild(p.generateForm());
 
 ///////////////////////////////////////////////////////////////

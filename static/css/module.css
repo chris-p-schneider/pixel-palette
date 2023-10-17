@@ -1,0 +1,116 @@
+/*********************************************************/
+/* module.css */
+/*********************************************************/
+
+#theme-toggle {
+	font-size: 1.5rem;
+	position: absolute;
+	top: .5rem;
+	right: .5rem;
+	cursor: pointer;
+	user-select: none;
+}
+.converter-image {
+	min-height: 464px;
+	max-height: 464px;
+	max-width: 100%;
+	object-fit: contain;
+	background-color: black;
+}
+
+#ic-output-status {
+	font-style: italic;
+	word-break: break-all;
+}
+
+#logo {
+	font-size: 4rem;
+	font-weight: 700;
+}
+
+/* to top nav icon */ 
+#to-top {
+	cursor: pointer;
+	position: fixed;
+	right: 1rem;
+	bottom: 1rem;
+	
+	font-size: 1.5rem;
+	opacity: .5;
+	transition: opacity .3s ease-in-out;
+}
+#to-top a {
+	text-decoration: none;
+	color: white;
+}
+
+/*********************************************************/
+
+#output-image-container {
+	min-height: 464px;
+	max-height: 464px;
+	max-width: 100%;
+	object-fit: contain;
+	background-color: black;
+
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+}
+.output-svg-container {
+	min-height: 464px;
+	max-height: 464px;
+
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+}
+.output-svg-container canvas {
+	z-index: -1;
+}
+.output-svg {
+	width: 100%;
+	height: auto;
+	max-height: 100%;
+}
+
+g {
+	shape-rendering: crispEdges;
+}
+
+/*********************************************************/
+/* palete form */
+/*********************************************************/
+
+.palette-form {
+	position: relative;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: stretch;
+	align-content: center;
+	margin-top: 5px;
+	gap: 5px 2%;
+}
+.palette-form .swatch {
+	padding: 0;
+	height: 2rem;
+}
+/* flex sizing for swatch counts */
+.sw_1 {
+	flex: 1;
+}
+.sw_4 {
+	flex-basis: calc(calc(94% / 4) - calc(2% / 4));
+}
+.sw_8 {
+	flex-basis: calc(calc(86% / 8) - calc(2% / 8));	
+}
+.palette-loader .swatch {
+	transition: opacity .3s ease-in-out;
+	animation: swatch-loading 1s infinite backwards;
+}
+.palette-form button {
+	flex-grow: 1;
+}
+
+/*********************************************************/

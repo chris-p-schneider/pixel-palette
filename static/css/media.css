@@ -1,0 +1,48 @@
+/*********************************************************/
+/* media.css */
+/*********************************************************/
+
+@media screen and (max-width: 1200px) {
+	#logo {
+		font-size: 2.6rem !important;
+	}
+	#image-converter > h1 {
+		font-size: 1.75rem;
+	}
+	#ic-form {
+		flex-basis: 100%;
+	}
+	#image-converter .col {
+		flex-basis: calc(calc(100% / 2) - 2rem);
+		min-width: calc(calc(100% / 2) - 2rem);
+		max-width: 50vw;
+	}
+}
+@media screen and (max-width: 900px) {
+	#logo {
+		font-size: 2rem !important;
+	}
+	#image-converter > h1 {
+		font-size: 1.5rem;
+	}
+	#ic-form {
+		flex-basis: 200%;
+	}
+	#image-converter .col {
+		flex-basis: calc(100% - 2rem);
+		min-width: calc(100% - 2rem);
+		max-width: 90vw;
+	}
+}
+@media screen and (max-width: 450px) {
+	:root {
+		font-size: 14px;
+	}
+}
+@media screen and (max-width: 355px) {
+	:root {
+		font-size: 12px;
+	}
+}
+
+/*********************************************************/

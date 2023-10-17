@@ -16,7 +16,13 @@
 	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 	<!-- CUSTOM CSS -->
-	<link href="{{ url_for('static', filename='css/mvp.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='css/layout.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='css/media.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='css/module.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='css/animation.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='css/theme.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='css/state.css') }}" rel="stylesheet">
 	<style id="theme-style"></style>
 
 	<!-- JAVASCRIPT -->
@@ -197,14 +203,26 @@
 					<div id="palette-output"></div>
         			 <br>
 	        		<p id="ic-output-status"
-	        		   class="no-select">
+	        		   class="no-select"
+	        		   style="margin-bottom: 10px;">
 						Select an image to convert</p>
-					<br>
-					<a id="ic-output-link" href="" target="_blank">
-        			<input type="button" value="Save"
-        				   id="ic-output-save"
-        				   disabled>
-        			</a>
+
+					<div class="row" style="gap: 10px">
+						<div class="col" style="padding: 0; flex: 1;">
+							<a id="ic-output-png-link" href="" target="_blank">
+		        			<input type="button" value="Save PNG"
+		        				   id="ic-output-png-save"
+		        				   disabled>
+		        			</a>
+						</div>
+						<div class="col" style="padding: 0; flex: 1;">
+							<a id="ic-output-svg-link" href="" target="_blank">
+		        			<input type="button" value="Save SVG"
+		        				   id="ic-output-svg-save"
+		        				   disabled>
+		        			</a>
+						</div>
+					</div>
         	</div>
         </div>
 

@@ -28,9 +28,12 @@ const convert 				= document.querySelector('#ic-mod-convert');
 
 const outputContainer		= document.querySelector('#output-image-container');
 const outputImage			= document.querySelector('#converter-image-output');
-const status 				= document.querySelector('#ic-output-status'); 
-const saveButton 			= document.querySelector('#ic-output-save');
-const saveImgLink 			= document.querySelector('#ic-output-link');
+const status 				= document.querySelector('#ic-output-status');
+
+const savePngButton 		= document.querySelector('#ic-output-png-save');
+const savePngLink 			= document.querySelector('#ic-output-png-link');
+const saveSvgLink 			= document.querySelector('#ic-output-svg-link');
+const saveSvgButton 		= document.querySelector('#ic-output-svg-save');
 
 const paletteInput 	= document.querySelector('#palette-input');
 const paletteOutput = document.querySelector('#palette-output');
@@ -73,7 +76,8 @@ function loadEvents() {
 		loadImageSrc(selected[0].dataset.imgSrc);
 		requestInputPalette(e);
 		outputImage.src = '';
-		saveButton.setAttribute('disabled', '');
+		savePngButton.setAttribute('disabled', '');
+		saveSvgButton.setAttribute('disabled', '');
 	});
 	// update user image
 	inputImageFile.addEventListener('change', (e) => {
@@ -147,7 +151,8 @@ function uploadImage(e) {
 	}
 	else {
 		inputSampleDropdown.querySelector('option').selected = true;
-		saveImgLink.href = '';
+		savePngLink.href = '';
+		saveSvgLink.href = '';
 		const reader = new FileReader();
 		reader.onload = (e) => {
 		    inputImage.src = e.target.result;
@@ -170,7 +175,8 @@ function loadImageSrc(src) {
 		? addTableData()
 		: inputImage.onload = addTableData
 	inputImageFile.value = '';
-	saveImgLink.href = '';
+	savePngLink.href = '';
+	saveSvgLink.href = '';
 	removeDisabled();
 	status.textContent = 'Modify then press \'Convert Image\'';
 }
@@ -247,7 +253,7 @@ function submitConversionForm(e) {
 
 	    	outputImage.src = `${data.outputImg}?${new Date().getTime()}`;
 	    	outputImage.style.display = 'none';
-	    	saveImgLink.href = data.outputImg;
+	    	savePngLink.href = data.outputImg;
 			status.textContent = `Image converted successfully in ${data.time}!`;
 	    	resetWhenLoaded(true);
    	    	
@@ -297,7 +303,8 @@ function resetWhenLoaded(successful) {
 	colorsSlider.disabled 			= false;
 	convert.disabled 				= false;
 	if (successful) {
-		saveButton.removeAttribute('disabled');
+		savePngButton.removeAttribute('disabled');
+		saveSvgButton.removeAttribute('disabled');
 	}
 }
 

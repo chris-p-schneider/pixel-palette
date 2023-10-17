@@ -146,6 +146,14 @@ class OutputSVG {
 			this.svg.appendChild(group);
 		}
 	}
+	generateBlobUrl(link) {
+		const s 	  = new XMLSerializer();
+		const str 	  = s.serializeToString(this.svg);
+		const blob 	  = new Blob([str], {type: 'image/svg+xml;charset=utf-8'})
+		const url 	  = URL.createObjectURL(blob);
+		link.setAttribute('href', url);
+		link.setAttribute('download', `pixel-art-${new Date().getTime()}.svg`);
+	}
 	async renderHTML() {
 		this.parentNode.appendChild(this.container);
 		try {
@@ -155,6 +163,10 @@ class OutputSVG {
 		}
 		console.log('pixelGrid', this.pixelGrid);
 		this.createSVG();
+		const saveLink = document.querySelector('#ic-output-svg-link');
+		if (saveLink) {
+			this.generateBlobUrl(saveLink);
+		}
 	}
 }
 
