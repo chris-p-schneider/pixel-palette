@@ -18,6 +18,14 @@
 	background-color: black;
 }
 
+#estimated-time-p {
+	text-align: center;
+	margin-bottom: 15px;
+	background-color: hsla(0, 0%, 90%, 1);
+	padding: 10px 0 !important;
+	border-radius: 3px;
+}
+
 #ic-output-status {
 	font-style: italic;
 	word-break: break-all;
@@ -46,6 +54,10 @@
 
 /*********************************************************/
 
+#converter-image-output {
+	position: absolute;
+	width: 100%;
+}
 #output-image-container {
 	min-height: 464px;
 	max-height: 464px;
@@ -94,6 +106,9 @@ g {
 .palette-form .swatch {
 	padding: 0;
 	height: 2rem;
+}
+.palette-form .swatch:disabled {
+	cursor: default;
 }
 /* flex sizing for swatch counts */
 .sw_1 {

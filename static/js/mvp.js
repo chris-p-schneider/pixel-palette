@@ -24,7 +24,12 @@ const upscaleLabelSpan		= document.querySelector('#ic-mod-upscale-label span');
 const upscaleSlider 		= document.querySelector('#ic-mod-upscale');
 const colorsLabelSpan		= document.querySelector('#ic-mod-colors-label span');
 const colorsSlider 			= document.querySelector('#ic-mod-colors');
+
+const generateSvgCheckbox   = document.querySelector('#ic-mod-svg');
+const estimatedTime 		= document.querySelector('#estimated-time');
+let countdownId;			// used to initialize interval
 const convert 				= document.querySelector('#ic-mod-convert');
+const cancelConversion		= document.querySelector('#ic-cancel-convert');
 
 const outputContainer		= document.querySelector('#output-image-container');
 const outputImage			= document.querySelector('#converter-image-output');
@@ -56,6 +61,10 @@ function toggleTheme() {
 			}
 			h2 {
 				color: hsla(0, 0%, 90%, 1.0) !important;
+			}
+			#estimated-time-p {
+				background-color: hsla(0, 0%, 0%, 1.0);
+				color: white;
 			}`;
 	}
 	else {
@@ -86,7 +95,7 @@ function addRemoveImgLoadAnimation(img) {
 function loadEvents() {
 	// add theme toggle
 	themeToggle.addEventListener('click', toggleTheme);
-	themeToggle.click();
+	// themeToggle.click();
 	// update sample images
 	inputSampleDropdown.addEventListener('change', (e) => {
 		let selected = inputSampleDropdown.selectedOptions;
@@ -94,7 +103,11 @@ function loadEvents() {
 		loadImageSrc(selected[0].dataset.imgSrc);
 		requestInputPalette(e);
 		outputImage.src = '';
-		outputContainer.innerHTML = '';
+		// outputContainer.innerHTML = '';
+		const svgOutput = document.querySelector('.output-svg-container');
+		if (svgOutput) {
+			svgOutput.remove();
+		}
 		savePngButton.disabled = true;
 		saveSvgButton.disabled = true;
 	});
@@ -109,6 +122,7 @@ function loadEvents() {
 		imageOutputH.value = adjustedHeight;
 		tds[4].textContent = `${parseInt(adjustedHeight)}px`;
 		tds[5].textContent = `${imageOutputW.value * adjustedHeight}px`;
+		loadingTimeEstimate(colorsSlider.value, imageOutputW.value * adjustedHeight);
 		tds[6].textContent = `${imageOutputW.value * upscaleSlider.value}px`;
 		tds[7].textContent = `${adjustedHeight * upscaleSlider.value}px`;
 		tds[8].textContent = `${imageOutputW.value * upscaleSlider.value 
@@ -121,6 +135,7 @@ function loadEvents() {
 		imageOutputW.value = adjustedWidth;
 		tds[3].textContent = `${parseInt(adjustedWidth)}px`;
 		tds[5].textContent = `${imageOutputH.value * adjustedWidth}px`;
+		loadingTimeEstimate(colorsSlider.value, imageOutputW.value * adjustedHeight);
 		tds[6].textContent = `${adjustedWidth * upscaleSlider.value}px`;
 		tds[7].textContent = `${imageOutputH.value * upscaleSlider.value}px`;
 		tds[8].textContent = `${adjustedWidth * upscaleSlider.value 
@@ -139,14 +154,29 @@ function loadEvents() {
 		colorsLabelSpan.textContent = `(${colorsSlider.value})`;
 		paletteOutput.innerHTML = '';
 		paletteOutput.appendChild(new PaletteLoader(colorsSlider.value, false).generateForm());
+		loadingTimeEstimate(colorsSlider.value, 
+			parseInt(tds[3].textContent) * parseInt(tds[4].textContent));
 	});
 	// update submit button
 	imageConversionForm.addEventListener('submit', (e) => {
 		submitConversionForm(e);
 	});
+	// update cancel button
+	cancelConversion.addEventListener('click', (e) => {
+		fetch('/stop-conversion', {
+		    method: 'POST'
+		})
+		.then(response => {
+			console.log(response);
+		})
+		.catch(error => {
+		    console.error('Error:', error);
+		});
+
+	});
 	// create initial palette placeholders
-	paletteInput.appendChild(new PaletteLoader(16, false).generateForm())
-	paletteOutput.appendChild(new PaletteLoader(1, false).generateForm())
+	paletteInput.appendChild(new PaletteLoader(16, false).generateForm());
+	paletteOutput.appendChild(new PaletteLoader(1, false).generateForm());
 }
 
 // remove disabled attributes from modify column
@@ -155,6 +185,7 @@ function removeDisabled() {
 	imageOutputH.removeAttribute('disabled');
 	upscaleSlider.removeAttribute('disabled');
 	colorsSlider.removeAttribute('disabled');
+	generateSvgCheckbox.removeAttribute('disabled');
 	convert.removeAttribute('disabled');
 }
 
@@ -220,6 +251,8 @@ function addTableData() {
 	tds[3].textContent = `${Math.floor(inputImage.naturalWidth / 10)}px`;
 	tds[4].textContent = `${Math.floor(inputImage.naturalHeight / 10)}px`;
 	tds[5].textContent = `${parseInt(tds[3].textContent) * parseInt(tds[4].textContent)}px`;
+	loadingTimeEstimate(colorsSlider.value, 
+		parseInt(tds[3].textContent) * parseInt(tds[4].textContent));
 	imageOutputW.value = Math.floor(inputImage.naturalWidth / 10);
 	imageOutputH.value = Math.floor(inputImage.naturalHeight / 10);
 	// upscale
@@ -262,8 +295,21 @@ function requestInputPalette(e) {
 // handle form data submission
 function submitConversionForm(e) {
 	e.preventDefault();
+	if (parseInt(tds[5].textContent) >= 10000 && generateSvgCheckbox.checked) {
+		if (!confirm('This size SVG might crash your browser. Proceed?')) {
+			generateSvgCheckbox.checked = false;
+			return;
+		}
+	}
+	loadingTimeEstimate(colorsSlider.value, 
+		parseInt(tds[3].textContent) * parseInt(tds[4].textContent), true);
+	cancelConversion.disabled = false;
 	const formData = new FormData(e.target);
-	outputContainer.innerHTML = '';
+	// outputContainer.innerHTML = '';
+	const svgOutput = document.querySelector('.output-svg-container');
+	if (svgOutput) {
+		svgOutput.remove();
+	}
 	paletteOutput.innerHTML = '';
 	paletteOutput.appendChild(new PaletteLoader(colorsSlider.value, true).generateForm());
 
@@ -274,17 +320,37 @@ function submitConversionForm(e) {
 	.then(response => response.json())
 	.then(data => {
 	    console.log('conversion data', data);
+	    clearInterval(countdownId);
 	    if (data.outputImg) {
 	    	outputImage.src = `${data.outputImg}?${new Date().getTime()}`;
 	    	savePngLink.href = data.outputImg;
 			status.textContent = `Image converted successfully in ${data.time}!`;
 	    	resetWhenLoaded(true);
-   	    	
-   	    	const palette = new Palette(JSON.stringify(data.outPalette));
-   			const svg = new OutputSVG(outputContainer, palette, data);
-   			svg.renderHTML();
-	    	paletteOutput.innerHTML = '';
-	    	paletteOutput.appendChild(palette.generateForm());
+	    	if (data.time) {
+	    		compareConversionAndEstimate(data.time);
+	    	} else {
+	    		estimatedTime.textContent = '00:00:00';
+	    		estimatedTime.removeAttribute('data-estimate');
+	    	}
+   	    	if (data.outPalette) {
+	   	    	const palette = new Palette(JSON.stringify(data.outPalette));
+		    	paletteOutput.innerHTML = '';
+		    	paletteOutput.appendChild(palette.generateForm());   	    		
+	   	    	if (generateSvgCheckbox.checked) {
+	   				const svg = new OutputSVG(outputContainer, palette, data);
+	   				svg.renderHTML();
+	   	    	}
+   	    	}
+   	    	if (data.cancelled) {
+				outputImage.src = '';
+		    	paletteOutput.innerHTML = '';
+				paletteOutput.appendChild(new PaletteLoader(colorsSlider.value, false).generateForm());
+				loadingTimeEstimate(colorsSlider.value, 
+					parseInt(tds[3].textContent) * parseInt(tds[4].textContent));
+				status.textContent = `Conversion cancelled!`;
+				savePngButton.disabled = true;
+				saveSvgButton.disabled = true;
+   	    	}
 	    }
 	    else {
 			imageOutputError();
@@ -309,6 +375,7 @@ function disableWhileLoading() {
 	imageOutputH.disabled 		 = true;
 	upscaleSlider.disabled 		 = true;
 	colorsSlider.disabled 		 = true;
+	generateSvgCheckbox.disabled = true;
 	convert.disabled 			 = true;
 	outputImage.src = outputImage.dataset.loadingSrc;
 	inputImageFile.value
@@ -324,11 +391,75 @@ function resetWhenLoaded(successful) {
 	imageOutputH.disabled 		 = false;
 	upscaleSlider.disabled 		 = false;
 	colorsSlider.disabled 		 = false;
+	generateSvgCheckbox.disabled = false;
 	convert.disabled 			 = false;
+	cancelConversion.disabled    = true;
 	if (successful) {
 		savePngButton.removeAttribute('disabled');
-		saveSvgButton.removeAttribute('disabled');
+		if (generateSvgCheckbox.checked) {
+			saveSvgButton.removeAttribute('disabled');
+		} else {
+			saveSvgButton.disabled = true;
+		}
 	}
+}
+
+// show an estimated time when adjusting output size
+// IN: num colors, pixel area
+function loadingTimeEstimate(colors, pixels, countdownBool=false) {
+	let s = 0;
+	colors <= 4
+		? s = (0.001978814 * pixels) - 0.217346
+		: colors <= 8
+			? s = (0.003727724 * pixels) + 3.425029
+			: colors <= 12
+				? s = (0.007271631 * pixels) + 3.324693
+				: colors <= 16
+					? s = (0.0109569 * pixels) + 2.244694
+					: colors <= 20
+						? s = (0.02000925 * pixels) - 7.058332
+						: colors <= 24
+							? s = (0.02809849 * pixels) - 13.62986
+							: s = 0
+    if (s == 0) {
+    	let c24 = (0.02936306 * pixels) - 25.69328;
+    	let s = c24 * (colors / 24);
+    } else if (s < 0) {
+       	s = 2;
+    }
+    s < 1 ? s = Math.ceil(s) : s = Math.floor(s)
+    estimatedTime.setAttribute('data-estimate', s);
+
+	let date = new Date(0);
+	date.setSeconds(s);
+	estimatedTime.textContent = date.toISOString().substring(11, 19);
+	if (countdownBool) {
+		countdownId = setInterval(() => {
+			if (s == 0) {
+				estimatedTime.textContent = 'Welp, probably soon.';
+				clearInterval(countdownId);
+			} else {
+				s--;
+				date = new Date(0);
+				date.setSeconds(s);
+				estimatedTime.textContent = date.toISOString().substring(11, 19);
+			}
+		}, 1000);
+	}
+}
+
+function compareConversionAndEstimate(dataTime) {
+	const dt = dataTime.split(':'); 				      // MM:SS:mm
+	const secEst = parseInt(estimatedTime.dataset.estimate); // SS
+    estimatedTime.removeAttribute('data-estimate');
+	let secData = 0;
+	if (dt.length == 2) {
+		secData = parseInt(dt[0]) + parseInt(dt[1]) * 0.01;
+	}
+	else {
+		secData = parseInt(dt[0]) * 60 + parseInt(dt[1]) + parseInt(dt[2]) * 0.01;
+	}
+	estimatedTime.textContent = `Accuracy within ${Math.abs((secEst - secData).toFixed(2))}s`;
 }
 
 

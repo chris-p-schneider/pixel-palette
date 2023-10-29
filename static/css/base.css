@@ -54,6 +54,9 @@ input::file-selector-button {
 	padding-right: 10px;
 	padding-left: 10px;
 }
+input[type="range"] {
+	width: -webkit-fill-available;
+}
 
 input, select, label, button {
 	width: 100%;

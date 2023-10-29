@@ -42,10 +42,10 @@ function canvasToPixelGrid(parentElement, svgElement, imgSrc, scale) {
 					pixelRow.push(color);
 				}
 				pixelGrid.push(pixelRow);
-				console.log('pushed pixelRow');
+				// console.log('pushed pixelRow');
 			}
 			canvas.remove();
-			console.log(`pixelGrid.length: ${pixelGrid.length}`);
+			// console.log(`pixelGrid.length: ${pixelGrid.length}`);
 			resolve(pixelGrid);
 		});
 		img.addEventListener('error', (error) => {
@@ -159,7 +159,7 @@ class OutputSVG {
 		} catch(error) {
 			console.error('image load error: ', error);
 		}
-		console.log('pixelGrid', this.pixelGrid);
+		// console.log('pixelGrid', this.pixelGrid);
 		this.createSVG();
 		const saveLink = document.querySelector('#ic-output-svg-link');
 		if (saveLink) {

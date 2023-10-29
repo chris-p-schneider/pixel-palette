@@ -3,6 +3,7 @@
 ###############################################
 
 from flask import Flask, render_template, request, jsonify, url_for
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 from io import BytesIO
 from PIL import Image
@@ -48,12 +49,13 @@ def canvas():
 
 ###############################################
 
-@app.route('/stop-conversion')
+@app.route('/stop-conversion', methods=['POST'])
 def stop_conversion():
 	global stop_conversion_bool
 	stop_conversion_bool = True
+	pyxeled.update_stop_bool(True)
 	print('!! stopped conversion !!')
-	return
+	return 'Stopped'
 	
 ###############################################
 
@@ -143,12 +145,19 @@ def convert():
 		# return data here 🎁
 		data = {}
 		data['request'] = request.form
-		if total_time:
+		try:
 			data['time'] = total_time
-		if output_palette:
+		except:
+			print('ERR: total time unavailable')
+			data['cancelled'] = True
+		try:
 			data['outPalette'] = output_palette
-		if upscaled_path:
-			data['outputImg'] = url_for('static', filename=f'img/output/{output_f}')
+		except:
+			print('ERR: output palette unavailable')
+		try:
+			data['outputImg'] = url_for('static', filename=f'img/output/{output_f}')	
+		except:
+			print('ERR: output image unavailable')
 		
 		print(':: returning conversion:')
 		print(json.dumps(data, indent=4))

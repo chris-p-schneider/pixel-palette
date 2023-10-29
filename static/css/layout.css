@@ -27,6 +27,9 @@
 	display: flex;
 	flex-flow: column wrap;
 }
+.col * {
+	max-width: 100%;
+}
 
 #image-converter .col {
 	flex-basis: calc(calc(100% / 3) - 2rem);
@@ -44,6 +47,21 @@
 
 #ic-form .col {
 	flex-basis: calc(50% - 2rem);
+}
+
+.checkbox-container {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
+	max-width: 100%;
+	margin-bottom: 15px;
+}
+.checkbox-container * {
+	width: fit-content;
+}
+.checkbox-container input[type="checkbox"] {
+	width: 18px;
+	height: 18px;
 }
 
 #ic-output-save {

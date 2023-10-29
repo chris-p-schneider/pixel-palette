@@ -35,7 +35,7 @@
 	<title>{{ title }}</title>
 </head>
 <body>
-
+<!----------------------------------------------------------------------------------->
 <!-- LOGO -->
 <div id="title-container">
 	<img src="{{ url_for('static', filename='img/favicon.svg')}}">
@@ -45,6 +45,7 @@
 	<span id="theme-toggle">🌞</span>
 </div>
 
+<!----------------------------------------------------------------------------------->
 <!-- MAIN -->
 <main>
 	<div id="image-converter">
@@ -100,6 +101,7 @@
         	</div>
 
         	<div class="col">
+        	<!----------------------------------------------------------------------------------->
         	<!-- MODIFY	 -->
 		  		<h3 class="pixel no-select">Modify:</h3>
         		<table id="ic-mod-table" class="no-select">
@@ -183,14 +185,32 @@
         			   type="range" min="2" value="4" 
         			   max="24" disabled>
         		<br>
+        		<div class="checkbox-container">
+		        	<label id="ic-mod-svg-label" 
+		        		   for="ic-mod-svg"
+		        		   class="no-select">
+		        		Generate SVG? (Used to recolor output)
+		        	</label>
+		        	<input id="ic-mod-svg" 
+		        		   name="ic-mod-svg" 
+		        		   type="checkbox" checked disabled>       				
+        		</div>
+        		<p id="estimated-time-p" class="no-select">
+        			Estimated Time: <span id="estimated-time">00:00:00</span>
+        		</p>
+
         		<input type="submit" value="Convert Image" 
         			   id="ic-mod-convert" 
         			   disabled>
-        		</form> 
+        		</form>
+        		<input type="button" value="Cancel Conversion" 
+        			   id="ic-cancel-convert" style="margin-top: 15px;" 
+        			   disabled>
         		<!-- END FORM -->
         	</div>
 
         	<div class="col">
+        	<!----------------------------------------------------------------------------------->
         	<!-- OUTPUT	-->
 		  		<h3 class="pixel no-select">Output:</h3>
 		  		<div id="output-image-container">
